@@ -97,29 +97,7 @@
     }
 
     function draw() {
-      background(220); 
-
-      if (showStars) {
-        fill(star1.color);
-        noStroke();
-        ellipse(star1.x, star1.y, star1.size, star1.size);
-        
-        fill(star2.color);
-        noStroke();
-        ellipse(star2.x, star2.y, star2.size, star2.size);
-        
-        fill(star3.color);
-        noStroke();
-        ellipse(star3.x, star3.y, star3.size, star3.size);
-        
-        fill(star4.color);
-        noStroke();
-        ellipse(star4.x, star4.y, star4.size, star4.size);
-        
-        fill(star5.color);
-        noStroke();
-        ellipse(star5.x, star5.y, star5.size, star5.size);
-      }
+      background(220);
 
       let totalFrames = 600; 
       let currentFrame = frameCount % totalFrames;
@@ -131,6 +109,7 @@
 
       noStroke();
 
+      // 얼굴(Body) 그리기 시작
       fill(0);
       rect(240, 300, 120, 100);
       quad(240, 300, 190, 300, 140, 400, 240, 400);
@@ -234,6 +213,28 @@
         mouthHeight = 45;
       }
       arc(300, 260, mouthWidth, mouthHeight, 0, PI);
+
+      if (showStars) {
+        fill(star1.color);
+        noStroke();
+        ellipse(star1.x, star1.y, star1.size, star1.size);
+        
+        fill(star2.color);
+        noStroke();
+        ellipse(star2.x, star2.y, star2.size, star2.size);
+        
+        fill(star3.color);
+        noStroke();
+        ellipse(star3.x, star3.y, star3.size, star3.size);
+        
+        fill(star4.color);
+        noStroke();
+        ellipse(star4.x, star4.y, star4.size, star4.size);
+        
+        fill(star5.color);
+        noStroke();
+        ellipse(star5.x, star5.y, star5.size, star5.size);
+      }
     }
 
     function keyPressed() {
@@ -259,4 +260,3 @@
   </script>
 </body>
 </html>
-
