@@ -58,12 +58,10 @@
       <li>🅰️ <b>키보드 A:</b> 배경색 변경</li>
       <li>🇫 <b>키보드 F:</b> 눈 보이기/숨기기</li>
       <li>🇲 <b>키보드 M:</b> 입 열기/닫기</li>
-      <li>🇸 <b>키보드 S:</b> GIF 저장</li>
     </ul>
   </div>
 
   <script>
-    // --- 사용자가 제공한 p5.js 코드 시작 ---
     let star1, star2, star3, star4, star5;
 
     let mainFillColor;
@@ -239,9 +237,7 @@
     }
 
     function keyPressed() {
-      if (key === 's' || key === 'S') {
-        saveGif('mySketch', 10); 
-      } else if (key === 'a' || key === 'A') {
+      if (key === 'a' || key === 'A') {
         isAKeyPressed = !isAKeyPressed;
         if (isAKeyPressed) {
           mainFillColor = color(167, 160, 153); 
@@ -256,12 +252,11 @@
     }
 
     function mousePressed() {
-      // 캔버스 위에서만 클릭이 동작하도록 제한하거나 전체 화면에서 동작하게 할 수 있음
       if (mouseButton === LEFT) {
         showStars = !showStars;
       }
     }
-    // --- 사용자가 제공한 p5.js 코드 끝 ---
   </script>
 </body>
+
 </html>
