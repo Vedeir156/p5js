@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project 1 - Star Face</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+      font-family: sans-serif;
+    }
+    main {
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .controls {
+      margin-top: 20px;
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+    .controls h3 { margin: 0 0 10px 0; font-size: 16px; }
+    .controls ul { list-style: none; padding: 0; margin: 0; font-size: 14px; color: #555; }
+    .controls li { margin-bottom: 5px; }
+    .btn-home {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+      background: #fff;
+      padding: 8px 15px;
+      border-radius: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .btn-home:hover { background: #eee; }
+  </style>
+</head>
+<body>
+
+  <a href="index.html" class="btn-home">← 홈으로</a>
+
+  <main id="canvas-container"></main>
+
+  <div class="controls">
+    <h3>🎮 조작 방법</h3>
+    <ul>
+      <li>🖱️ <b>클릭 (Left Click):</b> 별 보이기/숨기기</li>
+      <li>🅰️ <b>키보드 A:</b> 배경색 변경</li>
+      <li>🇫 <b>키보드 F:</b> 눈 보이기/숨기기</li>
+      <li>🇲 <b>키보드 M:</b> 입 열기/닫기</li>
+      <li>🇸 <b>키보드 S:</b> GIF 저장</li>
+    </ul>
+  </div>
+
+  <script>
+    // --- 사용자가 제공한 p5.js 코드 시작 ---
+    let star1, star2, star3, star4, star5;
+
+    let mainFillColor;
+    let isAKeyPressed = false;
+    let showStars = false;
+    let showEyes = true;
+    let isMouthOpen = false;
+
+    function setup() {
+      // 캔버스를 HTML의 특정 요소 안에 넣기 위해 parent 지정
+      let cnv = createCanvas(600, 400);
+      cnv.parent('canvas-container');
+      
+      frameRate(60); 
+      mainFillColor = color(251, 248, 234);
+
+      star1 = createStar(100, 80);
+      star2 = createStar(450, 120);
+      star3 = createStar(500, 300);
+      star4 = createStar(150, 320);
+      star5 = createStar(300, 180);
+    }
+
+    function createStar(x, y) {
+      let starColor = color(random(200, 255), random(200, 255), random(200, 255), random(150, 255));
+      let starSize = random(5, 15);
+      return {
+        x: x,
+        y: y,
+        size: starSize,
+        color: starColor
+      };
+    }
+
+    function draw() {
+      background(220); 
+
+      if (showStars) {
+        fill(star1.color);
+        noStroke();
+        ellipse(star1.x, star1.y, star1.size, star1.size);
+        
+        fill(star2.color);
+        noStroke();
+        ellipse(star2.x, star2.y, star2.size, star2.size);
+        
+        fill(star3.color);
+        noStroke();
+        ellipse(star3.x, star3.y, star3.size, star3.size);
+        
+        fill(star4.color);
+        noStroke();
+        ellipse(star4.x, star4.y, star4.size, star4.size);
+        
+        fill(star5.color);
+        noStroke();
+        ellipse(star5.x, star5.y, star5.size, star5.size);
+      }
+
+      let totalFrames = 600; 
+      let currentFrame = frameCount % totalFrames;
+      let progress = currentFrame / totalFrames;
+      let sinValue = sin(progress * TWO_PI); 
+      let cp1y = map(sinValue, -1, 1, 80, 120); 
+      let cp2y = map(sinValue, -1, 1, 100, 130);
+      
+
+      noStroke();
+
+      fill(0);
+      rect(240, 300, 120, 100);
+      quad(240, 300, 190, 300, 140, 400, 240, 400);
+      quad(360, 300, 410, 300, 460, 400, 360, 400);
+
+      fill(240, 230, 200);
+
+      fill(255);
+      quad(240, 302, 360, 302, 340, 400, 260, 400);
+      
+      fill(251, 248, 234);
+      
+      rect(280, 265, 40, 60);
+      
+      stroke(1);
+      
+      beginShape();
+      curveVertex(185, 180);
+        
+      curveVertex(185, 180);
+      curveVertex(180, 215);
+      curveVertex(185, 250);
+      
+      curveVertex(185, 250);
+      endShape();
+      
+      
+      beginShape();
+      curveVertex(185, 250);
+        
+      curveVertex(185, 250);
+      curveVertex(170, 270);
+      curveVertex(185, 290);
+      curveVertex(300, 295);
+      curveVertex(400, 290);
+      curveVertex(430, 240);
+      curveVertex(430, 220);
+      
+      curveVertex(420, 220);
+      endShape();
+      
+      noStroke();
+      quad(185, 180, 185, 250, 420, 230, 420, 100);
+      
+      fill(mainFillColor);
+      
+      beginShape();
+      vertex(306, 70);
+        
+      bezierVertex(306, 70, 206, 80, 180, 120);
+      bezierVertex(180, 120, 160, 120, 160, 100);
+      bezierVertex(160, 100, 150, 120, 170, 130);
+      bezierVertex(170, 130, 150, 170, 180, 200);
+      bezierVertex(180, 200, 240, 200, 270, 160);
+      bezierVertex(270, 160, 290, 190, 310, 200);
+      bezierVertex(310, 200, 305, 200, 305, 170);
+      bezierVertex(305, 170, 355, 210, 415, 210);
+      bezierVertex(415, 210, 420, 210, 410, 260);
+      bezierVertex(500, 200, 470, 60, 306, 70);
+      
+      endShape();
+
+      triangle(345, 45, 345, 85, 365, 45);
+      
+      
+      noFill();
+      stroke(66, 66, 66);
+      strokeWeight(15);
+
+      beginShape();
+        vertex(220, 140);
+        bezierVertex(220, 140, 255, cp1y, 305, cp2y);
+      endShape();
+      
+      noStroke();
+      
+      if (showEyes) {
+        fill(0);
+        noStroke(); 
+        ellipse(265, 210, 16, 30);
+        ellipse(335, 210, 16, 30);
+      } else {
+        noFill();
+        stroke(0);
+        strokeWeight(3);
+        line(255, 210, 275, 210);
+        line(325, 210, 345, 210);
+      }
+
+      noFill();
+      stroke(0);
+      strokeWeight(2);
+      ellipse(265, 210, 55, 55);
+      ellipse(335, 210, 55, 55);
+      line(294, 200, 306, 200);
+
+      let mouthWidth = 60;
+      let mouthHeight = 30;
+      if (isMouthOpen) {
+        mouthWidth = 80;
+        mouthHeight = 45;
+      }
+      arc(300, 260, mouthWidth, mouthHeight, 0, PI);
+    }
+
+    function keyPressed() {
+      if (key === 's' || key === 'S') {
+        saveGif('mySketch', 10); 
+      } else if (key === 'a' || key === 'A') {
+        isAKeyPressed = !isAKeyPressed;
+        if (isAKeyPressed) {
+          mainFillColor = color(167, 160, 153); 
+        } else {
+          mainFillColor = color(45, 42, 46); 
+        }
+      } else if (key === 'f' || key === 'F') {
+        showEyes = !showEyes; 
+      } else if (key === 'm' || key === 'M') {
+        isMouthOpen = !isMouthOpen; 
+      }
+    }
+
+    function mousePressed() {
+      // 캔버스 위에서만 클릭이 동작하도록 제한하거나 전체 화면에서 동작하게 할 수 있음
+      if (mouseButton === LEFT) {
+        showStars = !showStars;
+      }
+    }
+    // --- 사용자가 제공한 p5.js 코드 끝 ---
+  </script>
+</body>
+</html>

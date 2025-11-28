@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project 2 - Sunset Camera</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #2c3e50; /* 밤 하늘 느낌의 배경색 */
+      font-family: sans-serif;
+      color: white;
+    }
+    main {
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      border-radius: 20px; /* 카메라 둥근 모서리에 맞춤 */
+      overflow: hidden;
+    }
+    .controls {
+      margin-top: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .controls h3 { margin: 0 0 10px 0; font-size: 16px; }
+    .controls ul { list-style: none; padding: 0; margin: 0; font-size: 14px; color: #ddd; }
+    .controls li { margin-bottom: 5px; }
+    .btn-home {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 8px 15px;
+      border-radius: 20px;
+      transition: background 0.3s;
+    }
+    .btn-home:hover { background: rgba(255, 255, 255, 0.4); }
+  </style>
+</head>
+<body>
+
+  <a href="index.html" class="btn-home">← 홈으로</a>
+
+  <main id="canvas-container"></main>
+
+  <div class="controls">
+    <h3>📸 Sunset Timelapse</h3>
+    <ul>
+      <li>⏳ <b>자동 재생:</b> 시간이 지나면 낮에서 밤으로 변합니다.</li>
+      <li>🇸 <b>키보드 S:</b> GIF 저장</li>
+      <li>(다시 보려면 페이지를 새로고침 하세요)</li>
+    </ul>
+  </div>
+
+  <script>
+    // --- 사용자가 제공한 p5.js 코드 시작 ---
+    
+    // 전역 변수 선언 (안정성을 위해 상단에 명시)
+    let skyStartColor, skyMidColor, skyEndColor;
+    let cloudStartColor, cloudMidColor, cloudEndColor;
+    let nightMoonColor, noonWaterColor, nightWaterColor;
+    let currentSkyColor, currentCloudColor, currentMoonColor, currentWaterColor;
+    let startMillis; // GIF 저장용 시간 기준 변수 추가
+
+    function setup() {
+      let cnv = createCanvas(600, 400);
+      cnv.parent('canvas-container'); // HTML의 main 태그 안에 캔버스 넣기
+      
+      colorMode(RGB);
+
+      skyStartColor = color(135, 206, 250);
+      skyMidColor = color(213, 59, 1);
+      skyEndColor = color(1, 29, 58);
+      cloudStartColor = color(255, 255, 255);
+      cloudMidColor = color(248, 121, 53);
+      cloudEndColor = color(1, 29, 58, 0);
+      nightMoonColor = color(255, 255, 255);
+      noonWaterColor = color(180, 220, 240);
+      nightWaterColor = color(0, 47, 94);
+    }
+
+    function draw() {
+      let now = millis();
+
+      if (now < 2500) {
+        let amt = map(now, 0, 2500, 0, 1, true);
+        currentSkyColor = lerpColor(skyStartColor, skyMidColor, amt);
+        currentCloudColor = lerpColor(cloudStartColor, cloudMidColor, amt);
+        currentMoonColor = currentSkyColor;
+        currentWaterColor = noonWaterColor;
+      } else {
+        let amt = map(now, 2500, 5000, 0, 1, true);
+        currentSkyColor = lerpColor(skyMidColor, skyEndColor, amt);
+        currentCloudColor = lerpColor(cloudMidColor, cloudEndColor, amt);
+        currentMoonColor = lerpColor(skyMidColor, nightMoonColor, amt);
+        currentWaterColor = lerpColor(noonWaterColor, nightWaterColor, amt);
+      }
+
+      drawGlobalBackground();
+      drawCameraBody();
+      drawScreenView();
+      drawInterface();
+    }
+
+    function drawGlobalBackground() {
+      background(currentSkyColor); 
+
+      fill(currentCloudColor);
+      noStroke();
+      
+      push();
+      translate((frameCount * 0.3) - 50, 0);
+      ellipse(400, 40, 400, 80);
+      ellipse(360, 40, 350, 80);
+      ellipse(420, 20, 300, 70);
+      ellipse(350, 40, 450, 50);
+      pop();
+
+      fill(220, 230, 180); 
+      rect(0, 150, 600, 250);
+      
+      fill(currentWaterColor);
+      ellipse(180, 250, 1200, 100);
+      triangle(0, 250, 0, 330, 320, 300)
+
+      fill(185, 178, 184);
+      quad(0, 355, 0, 400, 600, 400, 600, 345);
+      fill(230, 210, 180);
+      quad(0, 360, 0, 400, 600, 400, 600, 350);
+    }
+
+    function drawCameraBody() {
+      noStroke();
+
+      fill(101, 109, 121);
+      rect(40, 50, 520, 325, 20, 20, 20, 20);
+      rect(40, 25, 200, 50, 10, 10, 10, 10);
+      triangle(234, 26, 240, 50, 270, 50);
+      
+      fill(20, 20, 20);
+      rect(40, 80, 520, 260);
+    }
+
+    function drawScreenView() {
+      let sx = 70;
+      let sy = 110;
+      let sw = 320;
+      let sh = 200;
+
+      fill(currentSkyColor);
+      rect(sx, sy, sw, sh);
+      noStroke();
+      
+      fill(220, 230, 150);
+      rect(sx, sy + 70, sw, sh - 70);
+      
+      fill(185, 178, 184);
+      quad(sx, sy+140, sx, sy+182, sx+sw, sy+172, sx+sw, sy+100);
+      fill(230, 220, 170);
+      quad(sx, sy+140, sx, sy+180, sx+sw, sy+170, sx+sw, sy+100);
+
+      fill(currentWaterColor);
+      quad(sx, sy+100, sx, sy+160, sx+sw, sy+140, sx+sw, sy+100);
+
+      drawBench(sx + 120, sy + 130);
+      drawCloud(sx + 210, sy +30);
+      drawScreenOverlay(sx, sy, sw, sh);
+    }
+
+    function drawBench(x, y) {
+      fill(30, 60, 10);
+      noStroke();
+
+      quad(
+        x, y+5,
+        x + 110, y ,
+        x + 110, y + 30,
+        x, y + 25
+      );
+
+      quad(
+        x - 10, y + 20,
+        x + 100, y + 15,
+        x + 105, y + 30,
+        x - 5, y + 37
+      );
+
+      rect(x + 10, y + 35, 5, 11);
+      rect(x + 100, y + 30, 5, 10);
+      rect(x + 90, y + 30, 5, 6);
+      rect(x , y + 30, 5, 10);
+    }
+
+    function drawCloud(x, y) {
+      push();
+      translate((frameCount * 0.1) - 50, 0);
+      fill(currentCloudColor);
+      ellipse(x, y, 70, 20);
+      ellipse(x, y, 50, 28);
+      pop();
+      
+      fill(currentMoonColor);
+      circle(x-100, y, 30);
+      fill(currentSkyColor)
+      circle(x-95, y-2, 20);
+    }
+
+    function drawScreenOverlay(x, y, w, h) {
+      fill(200, 50, 50);
+      ellipse(x + 30, y + 25, 10, 10);
+      
+      fill(255);
+      textSize(14);
+      textStyle(NORMAL);
+      textAlign(LEFT, CENTER);
+      text("REC", x + 45, y + 26);
+
+      noFill();
+      stroke(255);
+      strokeWeight(2);
+      rect(x + w - 50, y + 25, 30, 15);
+      fill(255);
+      rect(x + w - 20, y + 29, 3, 7);
+      
+      noStroke();
+      rect(x + w - 48, y + 27, 15, 11);
+
+      stroke(255);
+      strokeWeight(3);
+      noFill();
+      let gapX = 25;
+      let gapY = 15;
+      let margin = 10;
+
+      line(x + margin, y + margin, x + margin + gapX, y + margin);
+      line(x + margin, y + margin, x + margin, y + margin + gapY);
+      line(x + w - margin, y + margin, x + w - margin - gapX, y + margin);
+      line(x + w - margin, y + margin, x + w - margin, y + margin + gapY);
+      line(x + margin, y + h - margin, x + margin + gapX, y + h - margin);
+      line(x + margin, y + h - margin, x + margin, y + h - margin - gapY);
+      line(x + w - margin, y + h - margin, x + w - margin - gapX, y + h - margin);
+      line(x + w - margin, y + h - margin, x + w - margin, y + h - margin - gapY);
+    }
+
+    function drawInterface() {
+      noStroke();
+      
+      fill(80, 85, 95);
+      ellipse(440, 150, 30, 30);
+      ellipse(440, 200, 30, 30);
+      
+      fill(90, 95, 105);
+      ellipse(480, 175, 30, 30); 
+
+      fill(80, 85, 95);
+      let now = millis();
+      let bigButtonSize = 70;
+
+      if (now < 5000) {
+        bigButtonSize = map(now, 0, 2500, 70, 55, true);
+      } else {
+        bigButtonSize = map(now, 2500, 5000, 55, 70, true);
+      }
+      
+      ellipse(500, 270, bigButtonSize, bigButtonSize);
+
+      fill(90, 95, 105);
+      rect(417, 290, 30, 25, 5);
+    }
+
+    function keyPressed() {
+      if (key === 's') {
+        saveGif('sunset_timelapse.gif', 10);
+      }
+    }
+    // --- 사용자가 제공한 p5.js 코드 끝 ---
+  </script>
+</body>
+</html>
