@@ -65,20 +65,17 @@
     let star1, star2, star3, star4, star5;
 
     let mainFillColor;
-    // [수정] 초기 상태를 true로 설정하여 시작 색상과 상태를 일치시킴
     let isAKeyPressed = true; 
     let showStars = false;
     let showEyes = true;
     let isMouthOpen = false;
 
     function setup() {
-      // 캔버스를 HTML의 특정 요소 안에 넣기 위해 parent 지정
       let cnv = createCanvas(600, 400);
       cnv.parent('canvas-container');
       
       frameRate(60); 
       
-      // [수정] 디폴트 색상을 원하시는 회색(167, 160, 153)으로 변경
       mainFillColor = color(167, 160, 153);
 
       star1 = createStar(100, 80);
@@ -262,3 +259,4 @@
   </script>
 </body>
 </html>
+
